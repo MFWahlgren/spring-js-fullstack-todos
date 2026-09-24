@@ -2,16 +2,88 @@ document.addEventListener("DOMContentLoaded", initApp);
 
 const BASE_URL_TODOS = "https://jsonplaceholder.typicode.com/todos";
 
+let todosData = [];
+const sortState = {
+    key: "title",
+    isAsc: true
+};
+
 async function initApp() {
     await refreshTodos();
 
     document.querySelector("#todoForm").addEventListener("submit", handleFormSubmit);
     document.querySelector("#todoTableBody").addEventListener("click", handleTableClick);
+    document.querySelector("#todoTableHeader").addEventListener("click", handleHeaderClick);
 }
 
 async function refreshTodos() {
-    const todos = await fetchTodos();
-    displayTodos(todos);
+    todosData = await fetchTodos();
+    displayTodos(todosData);
+}
+
+function sortAndDisplay() {
+    todosData.sort(sortBy(sortState.key, sortState.isAsc));
+    displayTodos(todosData);
+}
+
+function handleHeaderClick(e) {
+    const col = e.target.closest("th");
+    const key = col.getAttribute("data-sort-key");
+    if (!key) {
+        return;
+    }
+
+    if (sortState.key === key) {
+        sortState.isAsc = !sortState.isAsc;
+    }
+
+    if (sortState.key !== key) {
+        sortState.key = key;
+        sortState.isAsc = true;
+    }
+    sortAndDisplay();
+    updateSortIndicator();
+}
+
+function updateSortIndicator() {
+    const asc = "▲";
+    const desc = "▼";
+
+    // RESET
+    document.querySelectorAll(".sort-indicator").forEach(s => {
+        s.textContent = "";
+    });
+
+    // sort-title eller sort-userid
+    const span = document.querySelector(`#sort-${sortState.key}`);
+    span.textContent = sortState.isAsc ? asc : desc;
+
+
+}
+
+function sortBy(key, isAsc = true) {
+    return (a, b) => {
+
+        const aVal = a[key];
+        const bVal = b[key];
+
+        if (typeof aVal === "string" && typeof bVal === "string") {
+            const result = aVal.localeCompare(bVal);
+            // if (isAsc) {
+            //     return result;
+            // } else {
+            //     return -result;
+            // }
+            return isAsc ? result : -result;
+        }
+
+        if (typeof aVal === "number" && typeof bVal === "number") {
+            const result = aVal - bVal;
+            return isAsc ? result : -result;
+        }
+
+        return 0;
+    }
 }
 
 async function fetchTodos() {
