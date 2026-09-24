@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ek.osnb.demo</groupId>
-    <artifactId>todos</artifactId>
+    <artifactId>todosapp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-todo-service</name>
     <description>spring-todo-service</description>

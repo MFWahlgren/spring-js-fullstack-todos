@@ -1,4 +1,4 @@
-package ek.osnb.demo.todos;
+package ek.osnb.demo.todosapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
