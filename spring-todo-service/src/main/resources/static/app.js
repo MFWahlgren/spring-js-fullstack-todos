@@ -1,4 +1,5 @@
-import { fetchTodos, addTodo, updateTodo, deleteTodo } from "./todo.api.js";
+import { fetchTodos, addTodo, updateTodo, deleteTodo } from "./api/todo.api.js";
+import { sortBy } from "./utils/sorting.js";
 
 document.addEventListener("DOMContentLoaded", initApp);
 
@@ -72,30 +73,6 @@ function updateSortIndicator() {
     span.textContent = sortState.isAsc ? asc : desc;
 }
 
-function sortBy(key, isAsc = true) {
-    return (a, b) => {
-        const aVal = a[key];
-        const bVal = b[key];
-
-        if (typeof aVal === "string" && typeof bVal === "string") {
-            const result = aVal.localeCompare(bVal);
-            // if (isAsc) {
-            //     return result;
-            // } else {
-            //     return -result;
-            // }
-            return isAsc ? result : -result;
-        }
-
-        if (typeof aVal === "number" && typeof bVal === "number") {
-            const result = aVal - bVal;
-            return isAsc ? result : -result;
-        }
-
-        return 0;
-    };
-}
-
 function displayTodos(todos) {
     const tableBody = document.querySelector("#todoTableBody");
     tableBody.innerHTML = ""; // Clear existing rows
@@ -162,6 +139,13 @@ async function handleTableClick(event) {
     const action = event.target.getAttribute("data-action");
     const row = event.target.closest("tr");
     const id = row.getAttribute("data-id");
+
+    if(action === null){
+        window.location.href="todos.html?id=" + id;
+
+        //Man kan også gøre sådan her:
+        //window.location.href=`todos.html?id=${id}`;
+    }
 
     if (action === "delete") {
         await deleteTodo(id);
